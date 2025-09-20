@@ -15,7 +15,11 @@ const ProductDisplay = (props) => {
   return (
     <div className="productdisplay">
       <div className="productdisplay-main-img">
-        <img src={image} alt="Product" />
+        <img
+          src={image}
+          alt="Product"
+          style={{ height: "450px", width: "300px" }}
+        />
       </div>
       <div className="productdisplay-left">
         <div className="productdisplay-img-list">
@@ -24,7 +28,7 @@ const ProductDisplay = (props) => {
               src={item}
               alt="Product"
               onClick={() => selectedImage(item)}
-              className="naab-green-outline p-1"
+              className={`p-1 ${item === image ? "naab-green-outline" : ""}`}
             />
           ))}
         </div>

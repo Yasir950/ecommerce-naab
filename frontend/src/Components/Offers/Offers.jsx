@@ -9,7 +9,10 @@ const Offers = () => {
         <h1>Exclusive</h1>
         <h1>Offers For You</h1>
         <p>ONLY ON BEST SELLERS PRODUCT</p>
-        <button className="btn bg-success w-25 btn-lg text-light">
+        <button
+          className="btn bg-success btn-lg text-light"
+          style={{ width: "150px" }}
+        >
           Check Now!
         </button>
       </div>

@@ -103,22 +103,7 @@
     background: #f0f0f0;
 }
 
-.productdisplay-right button {
-    padding: 15px 30px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    background: #ff4141;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
 
-.productdisplay-right button:hover {
-    background: #e63a3a;
-}
 
 .productdisplay-right-category {
     margin-top: 10px;

@@ -1,13 +1,5 @@
 .hero {
-    height: 100vh;
-    background: linear-gradient(180deg, #f9f9f9, #e1ffea22 60%);
-    display: flex;
-    padding: 0;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    z-index: 1;
-    overflow-x: hidden;
+  padding: 10px;
 }
 
 .hero-left {

@@ -1,20 +1,15 @@
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background: white;
-    align-items: center;
-}
 
 .nav-logo {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-right: 50px;
 }
 
 .nav-logo img {
-    width: 100px;
+    width: 60px;
     height: auto;
+     transform-origin: center;
 }
 
 .nav-logo p {
@@ -22,43 +17,10 @@
     font-size: 18px;
     font-weight: 600;
 }
-
-.nav-menu {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    gap: 30px;
-    color: #171717;
-    font-size: 16px;
-    font-weight: 500;
+ .line {
+    border-bottom: 3px solid #eab676;
 }
 
-.nav-menu li {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    cursor: pointer;
-}
-
-.nav-menu li:hover {
-    color: #FF4141;
-    transition: color 0.3s ease;
-}
-
-.nav-menu hr {
-    border: none;
-    width: 60%;
-    height: 2px;
-    border-radius: 10px;
-    background: #FF4141;
-}
-
-.nav-menu li.active hr {
-    background: #FF4141;
-    height: 2px;
-}
 
 .nav-login-cart {
     display: flex;
@@ -66,36 +28,88 @@
     gap: 25px;
 }
 
-.nav-login-cart button {
-    width: 120px;
-    height: 40px;
-    outline: none;
-    border: 1px solid #171717;
-    border-radius: 50px;
-    color: #515151;
-    font-size: 14px;
-    font-weight: 500;
-    background: white;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    .underline-anim {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
-.nav-login-cart button:active {
-    background: rgb(187, 186, 186);
+.underline-anim::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px; /* adjust under text */
+  width: 100%;
+  height: 2px;
+  background-color: #eab676; /* Bootstrap primary */
+  transform: scaleX(0);
+  transform-origin: right; /* disappear towards right */
+  transition: transform 1s ease;
 }
 
-.nav-cart-count {
-    width: 18px;
-    height: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: -25px;
-    margin-left: -35px;
-    border-radius: 9px;
-    font-size: 12px;
-    background: red;
-    color: white;
+.underline-anim:hover::after {
+  transform: scaleX(1);
+  transform-origin: left; /* appear from left */
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-transform: uppercase; /* ensures letter is always capital */
+}
+@keyframes zoomInOut {
+  0%   { transform: scale(0.8); opacity: 0.5; }
+  50%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.zoom-in-out {
+  animation: zoomInOut 1.2s ease-in-out; /* runs automatically once */
+}
+/* Parent <li> */
+.nav-item {
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 15px;
+}
+
+/* Hide dropdown by default */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;  /* below PRODUCTS */
+  left: 0;
+  min-width: 160px;
+  background: white;
+  border: 1px solid #ddd;
+  display: none; /* hidden initially */
+  flex-direction: column;
+  z-index: 1000;
+  padding: 8px 0;
+}
+
+/* Show when parent is hovered */
+.nav-item:hover .dropdown-menu {
+  display: flex;
+}
+
+/* Links inside dropdown */
+.dropdown-link {
+  display: block;
+  padding: 8px 15px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dropdown-link:hover {
+  background: #f5f5f5;
 }
 
 /* Mobile and tablet responsiveness */
@@ -109,7 +123,7 @@
         width: 80px; /* Adjust logo size for mobile */
     }
 
-    .nav-menu {
+    .nav-menu-item {
         gap: 20px;
         font-size: 14px;
     }
@@ -150,7 +164,7 @@
         width: 60px; /* Smaller logo on mobile */
     }
 
-    .nav-menu {
+    .nav-menu-item {
         display: none;
         flex-direction: column;
         gap: 15px;
@@ -158,17 +172,17 @@
         width: 100%;
     }
 
-    .nav-menu.open {
+    .nav-menu-item.open {
         display: flex;
     }
 
-    .nav-menu li {
+    .nav-menu-item li {
         width: 100%;
         text-align: left;
         padding: 10px;
     }
 
-    .nav-menu li:hover {
+    .nav-menu-item li:hover {
         background-color: #f1f1f1;
     }
 

@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
-import { ShopContext } from '../Context/ShopContext';
-import { useParams } from 'react-router';
-import Breadcrump from '../Components/Breadcrump/Breadcrump';
-import ProductDisplay from '../Components/ProductDisplay/ProductDisplay';
+import React, { useContext } from "react";
+import { ShopContext } from "../Context/ShopContext";
+import { useParams } from "react-router";
+import Breadcrump from "../Components/Breadcrump/Breadcrump";
+import ProductDisplay from "../Components/ProductDisplay/ProductDisplay";
 
 const Product = () => {
   const { all_product } = useContext(ShopContext);
@@ -16,7 +16,7 @@ const Product = () => {
   return (
     <div>
       <Breadcrump product={product} />
-      <ProductDisplay product={product}/>
+      <ProductDisplay product={product} />
     </div>
   );
 };

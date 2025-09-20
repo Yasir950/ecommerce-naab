@@ -1,23 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./ProductDisplay.css";
 import start_icon from "../Assets/star_icon.png";
 import star_dull_icon from "../Assets/star_dull_icon.png";
 import { ShopContext } from "../../Context/ShopContext";
+import { Link } from "react-router";
 
 const ProductDisplay = (props) => {
   const { product } = props;
   const { addToCart } = useContext(ShopContext);
-
+  const [image, setImage] = useState(product.image[0]);
+  const selectedImage = (image) => {
+    setImage(image);
+  };
   return (
     <div className="productdisplay">
       <div className="productdisplay-main-img">
-        <img src={product.image} alt="Product" />
+        <img src={image} alt="Product" />
       </div>
       <div className="productdisplay-left">
         <div className="productdisplay-img-list">
-          <img src={product.image} alt="Product" />
-          <img src={product.image} alt="Product" />
-          <img src={product.image} alt="Product" />
+          {product.image.map((item) => (
+            <img
+              src={item}
+              alt="Product"
+              onClick={() => selectedImage(item)}
+              className="naab-green-outline p-1"
+            />
+          ))}
         </div>
       </div>
 
@@ -35,10 +44,10 @@ const ProductDisplay = (props) => {
 
         <div className="productdisplay-right-prices">
           <div className="productdisplay-right-price-old">
-            ${product.old_price}
+            PKR {product.old_price}
           </div>
           <div className="productdisplay-right-price-new">
-            ${product.new_price}
+            PKR {product.new_price}
           </div>
         </div>
 
@@ -46,7 +55,7 @@ const ProductDisplay = (props) => {
           <p>{product.description}</p>
         </div>
 
-        <div className="productdisplay-right-size">
+        {/* <div className="productdisplay-right-size">
           <h1>Select Size</h1>
           <div className="productdisplay-right-sizes">
             <div>S</div>
@@ -55,19 +64,17 @@ const ProductDisplay = (props) => {
             <div>XL</div>
             <div>XXL</div>
           </div>
-        </div>
-
-        <button
-          onClick={() => {
-            addToCart(product.id);
-          }}
-        >
-          Add to Cart
-        </button>
-
-        <p className="productdisplay-right-category">
-          <span>Category: {product.category}</span>
-        </p>
+        </div> */}
+        <Link to="/cart">
+          <button
+            className="btn naab-green-outline w-100"
+            onClick={() => {
+              addToCart(product.id);
+            }}
+          >
+            Add to Cart
+          </button>
+        </Link>
       </div>
     </div>
   );

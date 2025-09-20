@@ -76,8 +76,8 @@
 
 .footer-copyright {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     gap: 10px;
     width: 100%;
     color: #1a1a1a;

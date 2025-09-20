@@ -10,8 +10,32 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Poppins', sans-serif;
+  background-color: #FFF;
 }
-
+.naab-green-text{
+  color: #234E41;
+}
+.naab-green-outline{
+  border: 1px solid #234E41;
+  color: #234E41;;
+}
+.naab-green-outline:hover{
+  border: 1px solid #234E41;
+  color: #FFF;;
+  background: #234E41;
+}
+.naab-green-bg{
+  background: #234E41 !important;
+}
+.naab-cream-text{
+  color: #F4E9D8;
+}
+.naab-cream-bg{
+  background: #F4E9D8 !important;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+p{
+  margin-bottom: 0px !important;
 }

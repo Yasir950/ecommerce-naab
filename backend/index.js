@@ -12,9 +12,9 @@ async function connectMongoDb() {
     try {
       await  mongoose.connect(MONGOURL);
      isConnected = true;
-     app.listen(8000, ()=>{
-        console.log('connecting to port 8000')
-     })
+    //  app.listen(8000, ()=>{
+    //     console.log('connecting to port 8000')
+    //  })
      console.log('connected to mongodb')
     } catch (error) {
         console.log('error connecting database' + error)
@@ -32,4 +32,4 @@ app.use('/', (req, res)=>{
 res.send('hello')
 });
 connectMongoDb();
-// export default app;
+export default app;

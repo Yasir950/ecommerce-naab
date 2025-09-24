@@ -23,6 +23,8 @@ app.use((req,res,next)=>{
     }
     next();
 })
-app.use('/', router);
+app.use('/', (req, res)=>{
+res.send('hello')
+});
 
 export default app;

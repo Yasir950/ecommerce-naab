@@ -9,8 +9,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 20px auto;
-    width: 80%;
+    margin: 20px 100px;
+    /* width: 87%; */
 }
 
 .shopcategory-indexSort p {

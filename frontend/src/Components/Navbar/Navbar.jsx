@@ -1,20 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Navbar.css";
 import logo from "../Assets/logo.png";
-import { Badge } from "react-bootstrap";
+import { Badge, Dropdown } from "react-bootstrap";
 import { Cart } from "react-bootstrap-icons"; // Bootstrap icon
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 import { AuthContext } from "../../Context/AuthContext";
+import { getData } from "../../apiservices";
 const Navbar = () => {
   const [menu, setMenu] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle menu visibility
   const { getTotalCartItems } = useContext(ShopContext);
-  const { user, logout } = useContext(AuthContext);
   const [animate, setAnimate] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const [cats, setCats] = useState([]);
 
+  const getCats = async () => {
+    let res = await getData("categories");
+    setCats(res);
+  };
   useEffect(() => {
     // Trigger animation when component mounts
+    getCats();
     setAnimate(true);
     // Remove the animation className after it finishes (optional)
     const timer = setTimeout(() => setAnimate(false), 1200);
@@ -24,12 +30,15 @@ const Navbar = () => {
 
   // Handle logout functionality
   const handleLogout = () => {
-    logout();
+    localStorage.clear();
     navigate("/");
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light ">
+    <nav
+      className="navbar navbar-expand-lg navbar-light "
+      style={{ paddingTop: "0px", paddingBottom: "0px" }}
+    >
       <div className="container-fluid">
         <Link to="/" className="nav-logo">
           <img
@@ -72,26 +81,20 @@ const Navbar = () => {
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                className={`nav-link dropdown-toggle text-dark text-decoration-none underline-anim`}
+                className={`nav-link dropdown-toggle text-dark text-decoration-none `}
               >
                 CATEGORIES
               </Link>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    CATEGORY 1
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    CATEGORY 2
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    CATEGORY 3
-                  </a>
-                </li>
+                {cats.map((item) => (
+                  <Link
+                    to={`/product/${item._id} `}
+                    className="nav-logo text-decoration-none"
+                    key={item._id}
+                  >
+                    <li className=" text-black-50">{item.name}</li>
+                  </Link>
+                ))}
               </ul>
             </li>
             <li className="nav-item">
@@ -132,14 +135,11 @@ const Navbar = () => {
           </ul>
           <div className="d-flex">
             <div className="nav-login-cart">
-              {user ? (
-                <button onClick={handleLogout}>Logout</button>
-              ) : (
+              {!userData?._id && (
                 <Link to="/login">
                   <button
                     type="button"
                     className="btn naab-green-outline border-2"
-                    style={{ width: "120px" }}
                   >
                     Login
                   </button>
@@ -158,7 +158,36 @@ const Navbar = () => {
                   </Badge>
                 </div>
               </Link>
-              <div className="avatar naab-green-bg">H</div>
+              {userData && (
+                <Dropdown align="end">
+                  <Dropdown.Toggle
+                    as="div"
+                    id="avatarDropdown"
+                    className="p-0"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div
+                      className="avatar naab-green-bg d-inline-flex align-items-center justify-content-center"
+                      style={{ width: 40, height: 40, borderRadius: "50%" }}
+                    >
+                      {userData.first?.charAt(0).toUpperCase()}
+                    </div>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => navigate("/orders")}>
+                      My Orders
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                    // onClick={() => navigate("/profile")}
+                    >
+                      Profile
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
             </div>
           </div>
         </div>

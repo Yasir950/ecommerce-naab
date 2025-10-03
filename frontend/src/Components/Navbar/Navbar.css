@@ -85,13 +85,13 @@
   position: absolute;
   top: 100%;  /* below PRODUCTS */
   left: 0;
-  min-width: 160px;
+  min-width: 230px;
   background: white;
   border: 1px solid #ddd;
   display: none; /* hidden initially */
   flex-direction: column;
   z-index: 1000;
-  padding: 8px 0;
+  padding: 8px 8px;
 }
 
 /* Show when parent is hovered */

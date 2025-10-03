@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom"; // for redirection
 import "./Css/LoginSignup.css";
+import { saveUserData } from "../../apiservices";
+import { toast } from "react-toastify";
 
-const SignupForm = () => {
+const SignupForm = ({ goToLogin }) => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate(); // to redirect to login page
 
@@ -21,24 +23,27 @@ const SignupForm = () => {
     },
     validationSchema: Yup.object({
       first: Yup.string().required("Required"),
-      last: Yup.string().required("Required"),
-      contact: Yup.string().required("Required"),
-      address: Yup.string().required("Required"),
+      last: Yup.string(),
+      contact: Yup.string(),
+      address: Yup.string(),
+      country: Yup.string(),
+      city: Yup.string(),
       email: Yup.string().email("Invalid email address").required("Required"),
       password: Yup.string()
         .min(6, "Must be 6 characters or more")
         .required("Required"),
     }),
-    onSubmit: (values) => {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (storedUser && storedUser.email === values.email) {
-        alert("User already exists! Please log in.");
-      } else {
-        // Save the new user in localStorage and log them in
-        localStorage.setItem("user", JSON.stringify(values)); // Save to localStorage
-        login(values); // Call login to update context
-        alert("Signup successful!");
-        navigate("/login"); // Redirect to login page after successful signup
+    onSubmit: async (values) => {
+      try {
+        const res = await saveUserData("users", values);
+        if (res._id) {
+          goToLogin();
+          toast.success("Sign up successfully");
+        }
+        // you can add success logic here, e.g. toast.success("Saved!");
+      } catch (error) {
+        console.error("Error saving user data:", error);
+        // you can add error handling here, e.g. toast.error("Failed to save!");
       }
     },
   });
@@ -133,9 +138,6 @@ const SignupForm = () => {
               value={formik.values.country}
             />
           </div>
-          {formik.touched.country && formik.errors.country && (
-            <div className="error">{formik.errors.country}</div>
-          )}
           <div class="mb-3 group-input">
             <label for="exampleFormControlInput1" class="form-label">
               Contact Number
@@ -150,9 +152,19 @@ const SignupForm = () => {
               value={formik.values.contact}
             />
           </div>
-          {formik.touched.contact && formik.errors.contact && (
-            <div className="error">{formik.errors.contact}</div>
-          )}
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">
+            City
+          </label>
+          <input
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            name="city"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.city}
+          ></input>
         </div>
         <div class="mb-3">
           <label for="exampleFormControlTextarea1" class="form-label">

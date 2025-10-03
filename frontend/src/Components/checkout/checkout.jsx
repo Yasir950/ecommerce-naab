@@ -1,16 +1,104 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../../Context/ShopContext";
 import logo from "../Assets/logo.png";
+import { getData, saveUserData } from "../../apiservices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
+
 const CheckoutComp = () => {
-  const { getTotalCartAmount, all_product, cartItems } =
-    useContext(ShopContext);
+  const { getTotalCartAmount, cartItems, clearCart } = useContext(ShopContext);
+  const [allProducts, setAllProducts] = useState([]); // products state
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    first: "",
+    last: "",
+    address: "",
+    city: "",
+    password: "",
+    contact: "",
+    country: "Pakistan",
+  });
+
+  // ✅ Fetch products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await getData("products");
+        setAllProducts(res || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // ✅ Handle input changes
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // ✅ Submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // 1. Check if user already exists
+      let userId;
+      const existingUser = await getData(`users?email=${formData.email}`); // backend should handle ?email= query
+      if (existingUser.length !== 0 && existingUser[0]._id) {
+        userId = existingUser[0]._id;
+      } else {
+        // 2. Create new user
+        const userRes = await saveUserData("users", {
+          first: formData.first,
+          last: formData.last,
+          email: formData.email,
+          contact: formData.contact,
+          address: formData.address,
+          city: formData.city,
+          country: formData.country,
+          password: formData.password,
+        });
+        userId = userRes._id;
+      }
+
+      // 3. Build order payload
+      const items = Object.keys(cartItems)
+        .filter((id) => cartItems[id] > 0)
+        .map((id) => {
+          const product = allProducts.find((p) => p._id === id);
+          return {
+            productId: id,
+            name: product?.name,
+            quantity: cartItems[id],
+            price: product?.price,
+          };
+        });
+
+      // 4. Save order
+      const orderRes = await saveUserData("orders", {
+        user: userId,
+        products: items,
+        price: getTotalCartAmount(),
+      });
+      if (orderRes.data.user) {
+        navigate("/login");
+        toast.success("Order placed successfully!");
+        clearCart();
+      }
+    } catch (err) {
+      console.error("Error placing order:", err);
+      toast.error("Something went wrong. Try again.");
+    }
+  };
+
   return (
     <>
       <div className="text-center">
         <img src={logo} width={"100px"} alt="OneStyle Logo" />
       </div>
       <div className="container py-4">
-        <div className="row">
+        <form className="row" onSubmit={handleSubmit}>
           {/* Left side form */}
           <div className="col-md-7">
             {/* Contact */}
@@ -18,20 +106,14 @@ const CheckoutComp = () => {
               <h5>Contact</h5>
               <div className="mb-3">
                 <input
-                  type="text"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="form-control"
-                  placeholder="Email or mobile phone number"
+                  placeholder="Email or mobile contact number"
+                  required
                 />
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="offers"
-                />
-                <label htmlFor="offers" className="form-check-label">
-                  Email me with news and offers
-                </label>
               </div>
             </div>
 
@@ -39,7 +121,12 @@ const CheckoutComp = () => {
             <div className="mb-4">
               <h5>Delivery</h5>
               <div className="mb-3">
-                <select className="form-select">
+                <select
+                  className="form-select"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                >
                   <option>Pakistan</option>
                 </select>
               </div>
@@ -47,13 +134,20 @@ const CheckoutComp = () => {
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
+                    name="first"
+                    value={formData.first}
+                    onChange={handleChange}
                     className="form-control"
                     placeholder="First name"
+                    required
                   />
                 </div>
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
+                    name="last"
+                    value={formData.last}
+                    onChange={handleChange}
                     className="form-control"
                     placeholder="Last name"
                   />
@@ -62,14 +156,21 @@ const CheckoutComp = () => {
               <div className="mb-3">
                 <input
                   type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
                   className="form-control"
                   placeholder="Address"
+                  required
                 />
               </div>
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
                     className="form-control"
                     placeholder="City"
                   />
@@ -77,27 +178,23 @@ const CheckoutComp = () => {
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="form-control"
-                    placeholder="Postal code (optional)"
+                    placeholder="password (you can login you account with this password)"
                   />
                 </div>
               </div>
               <div className="mb-3">
                 <input
                   type="text"
+                  name="contact"
+                  value={formData.contact}
+                  onChange={handleChange}
                   className="form-control"
                   placeholder="Phone"
                 />
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="saveInfo"
-                />
-                <label htmlFor="saveInfo" className="form-check-label">
-                  Save this information for next time
-                </label>
               </div>
             </div>
 
@@ -119,35 +216,7 @@ const CheckoutComp = () => {
               <div className="border rounded p-2">Cash on Delivery (COD)</div>
             </div>
 
-            {/* Billing address */}
-            <div className="mb-4">
-              <h5>Billing address</h5>
-              <div className="form-check">
-                <input
-                  type="radio"
-                  className="form-check-input"
-                  id="sameAddress"
-                  name="billing"
-                  defaultChecked
-                />
-                <label htmlFor="sameAddress" className="form-check-label">
-                  Same as shipping address
-                </label>
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  type="radio"
-                  className="form-check-input"
-                  id="differentAddress"
-                  name="billing"
-                />
-                <label htmlFor="differentAddress" className="form-check-label">
-                  Use a different billing address
-                </label>
-              </div>
-            </div>
-
-            <button className="btn naab-green-bg text-light w-75">
+            <button type="submit" className="btn naab-green-bg text-light w-75">
               Complete order
             </button>
           </div>
@@ -155,41 +224,30 @@ const CheckoutComp = () => {
           {/* Right side order summary */}
           <div className="col-md-5">
             <div className="border rounded p-3">
-              {/* Product */}
-              {all_product.map((e) => {
-                if (cartItems[e.id] > 0) {
+              {allProducts.map((e) => {
+                if (cartItems[e._id] > 0) {
                   return (
                     <div
-                      key={e.id}
+                      key={e._id}
                       className="d-flex justify-content-between mb-3"
                     >
                       <div className="d-flex">
                         <img
-                          src={e.image[0]}
                           alt="Product"
+                          src={e.images[0]}
                           className="carticon-product-icon me-2"
                         />
                         <div>
                           <p className="mb-1 fw-bold">{e.name}</p>
-                          <small>{e.desc}</small>
+                          <small>{e.description}</small>
                         </div>
                       </div>
-                      <p className="fw-bold">
-                        Rs {e.new_price * cartItems[e.id]}
-                      </p>
+                      <p className="fw-bold">Rs {e.price * cartItems[e._id]}</p>
                     </div>
                   );
                 }
+                return null;
               })}
-              {/* Discount code */}
-              {/* <div className="input-group mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Discount code"
-              />
-              <button className="btn btn-outline-secondary">Apply</button>
-            </div> */}
 
               {/* Summary */}
               <div className="d-flex justify-content-between">
@@ -207,7 +265,7 @@ const CheckoutComp = () => {
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );

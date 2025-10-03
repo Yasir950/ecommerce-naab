@@ -1,13 +1,20 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import router from './router/userRouter.js';
+import cors from 'cors';
+import userRouter from './router/userRouter.js';
+import productRouter from './router/productRouter.js';
+import categoryRouter from './router/catRouter.js';
+import orderRouter from './router/orderRouter.js';
+import authRouter from './router/authRouter.js';
 const app = express();
 dotenv.config();
 const MONGOURL = process.env.MONGO_URL
 const PORT = process.env.PORT
 let isConnected = false;
-app.use(express.json());
+app.use(cors())
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 async function connectMongoDb() {
     try {
       await  mongoose.connect(MONGOURL);
@@ -27,9 +34,10 @@ app.use((req,res,next)=>{
     }
     next();
 })
-app.use('/', router);
-app.use('/', (req, res)=>{
-res.send('hello')
-});
+app.use('/api', userRouter);
+app.use('/api', productRouter);
+app.use('/api', categoryRouter);
+app.use('/api', orderRouter);
+app.use('/auth', authRouter)
 connectMongoDb();
 export default app;

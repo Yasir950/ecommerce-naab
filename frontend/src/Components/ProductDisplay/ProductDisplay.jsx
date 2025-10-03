@@ -1,34 +1,48 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./ProductDisplay.css";
 import start_icon from "../Assets/star_icon.png";
 import star_dull_icon from "../Assets/star_dull_icon.png";
 import { ShopContext } from "../../Context/ShopContext";
 import { Link } from "react-router";
 
-const ProductDisplay = (props) => {
-  const { product } = props;
+const ProductDisplay = ({ product }) => {
   const { addToCart } = useContext(ShopContext);
-  const [image, setImage] = useState(product.image[0]);
-  const selectedImage = (image) => {
-    setImage(image);
+  const [image, setImage] = useState("");
+
+  // Set default image when product changes
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      setImage(product.images[0]);
+    }
+  }, [product]);
+
+  const selectedImage = (img) => {
+    setImage(img);
   };
+
   return (
     <div className="productdisplay">
       <div className="productdisplay-main-img">
         <img
           src={image}
           alt="Product"
-          style={{ height: "450px", width: "300px" }}
+          style={{
+            maxHeight: "500px",
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
         />
       </div>
+
       <div className="productdisplay-left">
         <div className="productdisplay-img-list">
-          {product.image.map((item) => (
+          {product.images?.map((item, index) => (
             <img
+              key={index}
               src={item}
-              alt="Product"
+              alt="Product Thumbnail"
               onClick={() => selectedImage(item)}
-              className={`p-1 ${item === image ? "naab-green-outline" : ""}`}
+              className={`thumb ${item === image ? "active-thumb" : ""}`}
             />
           ))}
         </div>
@@ -47,34 +61,20 @@ const ProductDisplay = (props) => {
         </div>
 
         <div className="productdisplay-right-prices">
-          <div className="productdisplay-right-price-old">
-            PKR {product.old_price}
-          </div>
           <div className="productdisplay-right-price-new">
-            PKR {product.new_price}
+            PKR {product.price}
           </div>
         </div>
 
-        <div className="productdisplay-right-description">
-          <p>{product.description}</p>
-        </div>
+        <div
+          className="productdisplay-right-description"
+          dangerouslySetInnerHTML={{ __html: product.description }}
+        ></div>
 
-        {/* <div className="productdisplay-right-size">
-          <h1>Select Size</h1>
-          <div className="productdisplay-right-sizes">
-            <div>S</div>
-            <div>M</div>
-            <div>L</div>
-            <div>XL</div>
-            <div>XXL</div>
-          </div>
-        </div> */}
         <Link to="/cart">
           <button
             className="btn naab-green-outline w-100"
-            onClick={() => {
-              addToCart(product.id);
-            }}
+            onClick={() => addToCart(product._id)}
           >
             Add to Cart
           </button>

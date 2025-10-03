@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Popular.css";
-import data_product from "../Assets/data";
 import Item from "../Item/Item";
+import { getData } from "../../apiservices";
 
 const Popular = () => {
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+  const getProducts = async () => {
+    let res = await getData("products");
+    setFilteredProducts(res);
+  };
   return (
     <div className="popular">
       <h1
@@ -15,17 +24,17 @@ const Popular = () => {
         Our Most Famous Products
       </h1>
       <div className="popular-item">
-        {data_product.map((item, i) => {
+        {filteredProducts.slice(0, 4).map((item, i) => {
           return (
             <Item
               key={i}
-              id={item.id}
+              id={item._id}
               name={item.name}
-              desc={item.desc}
-              image={item.image}
+              desc={item.description}
+              image={item?.images[0]}
               height={"200px"}
-              new_price={item.new_price}
-              old_price={item.old_price}
+              new_price={item.price}
+              old_price={item.discount}
             ></Item>
           );
         })}

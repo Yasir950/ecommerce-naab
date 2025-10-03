@@ -5,13 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ShopContextProvider from "./Context/ShopContext";
 import { AuthProvider } from "./Context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
       <ShopContextProvider>
-        <App />
+        <App /> <ToastContainer />
       </ShopContextProvider>
     </AuthProvider>
   </React.StrictMode>

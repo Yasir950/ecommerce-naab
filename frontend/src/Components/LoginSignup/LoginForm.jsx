@@ -1,14 +1,14 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom"; // to redirect
 import "./Css/LoginSignup.css";
+import { toast } from "react-toastify";
+import { userLogin } from "../../apiservices";
 
 const LoginForm = () => {
-  const { login } = useContext(AuthContext);
   const navigate = useNavigate(); // to redirect to homepage
-  const [error, setError] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -17,22 +17,22 @@ const LoginForm = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email address").required("Required"),
-      password: Yup.string()
-        .min(6, "Must be 6 characters or more")
-        .required("Required"),
+      password: Yup.string().required("Required"),
     }),
-    onSubmit: (values) => {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (
-        storedUser &&
-        storedUser.email === values.email &&
-        storedUser.password === values.password
-      ) {
-        login(storedUser); // Set user in context
-        alert("Login successful!");
-        navigate("/"); // Redirect to homepage after successful login
-      } else {
-        setError("Invalid email or password!");
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        const res = await userLogin(values);
+        if (res?.user?._id) {
+          console.log(res);
+          toast.success("Sign In successfully");
+          navigate("/");
+          localStorage.setItem("user", JSON.stringify(res.user));
+        }
+        // you can add success logic here, e.g. toast.success("Saved!");
+      } catch (error) {
+        console.error("Error saving user data:", error);
+        // you can add error handling here, e.g. toast.error("Failed to save!");
       }
     },
   });
@@ -77,7 +77,6 @@ const LoginForm = () => {
           <div className="error">{formik.errors.password}</div>
         )}
       </div>
-      {error && <div className="error">{error}</div>}
       <div class="d-flex justify-content-center">
         <button
           className="btn btn-outline-success btn-sm mt-3"

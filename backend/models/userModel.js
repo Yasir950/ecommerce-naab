@@ -1,11 +1,17 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    name:{type:String, required:true},
+    first:{type:String, required:true},
+    last:{type:String},
     email:{type:String, required:true},
-    move_id:{type:String, required:true},
-    text:{type:String, required:true},
-    date:{type:String, required:true},
-})
+    password:{type:String, required:true},
+    contact:{type:String},
+    address:{type:String},
+    country:{type:String},
+    city:{type:String},
+    is_admin:{type:Boolean, required:true, default: false},
+},
+{timestamps:true}
+)
 
 export default mongoose.model('users', userSchema);

@@ -1,14 +1,5 @@
 .offers {
-    width: 98.5%;
-    min-height: 60vh;
-    display: flex;
-    margin: auto;
-    padding: 0px 100px;
-    margin-bottom: 100px;
-    background: linear-gradient(180deg, #234E41, #F4E9D8 60%);
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 10px;
+  padding: 40px 0px;
 }
 
 
@@ -57,7 +48,73 @@
   border-radius: 12px; /* make it look neat */
   object-fit: cover;
 }
+.circle-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border: 4px solid #234E41;
+  border-radius: 50%;
+  background: #F4E9D8 !important;
+  
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.circle-svg {
+  width: 100%;
+  height: 100%;
+}
+/* 
+.circle-border {
+  animation: spin 10s linear infinite;
+} */
+
+.circle-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Rotate text path to align correctly around the circle */
+.circle-svg text {
+  transform: rotate(270deg);       /* adjust orientation */
+  transform-origin: 55% 55%;  
+  transform-origin: center center; /    /* rotate around center */
+}
+.feature-connector {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feature-connector::after {
+  content: "";
+  position: absolute;
+  top: 50%;             /* vertically center */
+  right: -40px;         /* space between circles */
+  width: 60px;          /* length of connector */
+  height: 2px;          /* thickness */
+  background: #234E41;  /* color */
+}
+
+.feature-connector:last-child::after {
+  display: none; /* no line after last item */
+}
+
 @media (max-width: 1024px) {
+     .feature-connector::after {
+    display: none;
+  }
     .offers {
         flex-direction: column;
         padding: 15px;
@@ -83,6 +140,9 @@
 }
 
 @media (max-width: 768px) {
+    .feature-connector::after {
+    display: none;
+  }
     .offers {
         padding: 10px;
     }
@@ -107,8 +167,10 @@
 }
 
 @media (max-width: 480px) {
+    .feature-connector::after {
+    display: none;
+  }
     .offers {
-        width: 90%;
         padding: 10px;
         margin-top: 30px;
     }
@@ -130,4 +192,5 @@
     .offers-right img {
         max-width: 180px;
     }
+    
 }

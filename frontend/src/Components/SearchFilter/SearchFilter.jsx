@@ -1,38 +1,47 @@
-import React from 'react';
-import './SearchFilter.css';
+import React from "react";
+import "./SearchFilter.css";
 
-const SearchFilter = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, priceRange, setPriceRange }) => {
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
-
-  const handlePriceChange = (e) => {
-    setPriceRange(e.target.value);
-  };
-
+const SearchFilter = ({
+  searchTerm,
+  setSearchTerm,
+  selectedCategory,
+  setSelectedCategory,
+  priceRange,
+  setPriceRange,
+  categories,
+}) => {
   return (
     <div className="search-filter">
-      <input 
-        type="text" 
-        placeholder="Search products..." 
-        value={searchTerm} 
-        onChange={handleSearch} 
+      {/* 🔍 Search */}
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <select value={selectedCategory} onChange={handleCategoryChange}>
+
+      {/* 🏷️ Category */}
+      <select
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+      >
         <option value="">All Categories</option>
-        <option value="men">Men</option>
-        <option value="women">Women</option>
-        <option value="kids">Kids</option>
+        {categories?.map((cat) => (
+          <option key={cat._id} value={cat._id}>
+            {cat.name}
+          </option>
+        ))}
       </select>
-      <select value={priceRange} onChange={handlePriceChange}>
+
+      {/* 💰 Price Range */}
+      <select
+        value={priceRange}
+        onChange={(e) => setPriceRange(e.target.value)}
+      >
         <option value="">All Price Ranges</option>
-        <option value="low">Under $50</option>
-        <option value="medium">$50 - $100</option>
-        <option value="high">Above $100</option>
+        <option value="low">Under PKR 3000</option>
+        <option value="medium">PKR 3000 - 4000</option>
+        <option value="high">Above PKR 4000</option>
       </select>
     </div>
   );

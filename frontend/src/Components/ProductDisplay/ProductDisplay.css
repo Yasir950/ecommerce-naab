@@ -3,7 +3,6 @@
     margin: 0px 100px;
     justify-content: space-between;
     gap: 40px;
-    padding: 40px 0;
 }
 
 .productdisplay-left {
@@ -109,7 +108,10 @@
     margin-top: 10px;
     text-transform: capitalize;
 }
-
+.active-thumb{
+    border: 2px solid red;
+    padding: 2px;
+}
 /* Responsive Design */
 @media (max-width: 1024px) {
     .productdisplay {

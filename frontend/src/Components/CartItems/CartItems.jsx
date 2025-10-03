@@ -1,17 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
 import { Link } from "react-router";
+import { getData } from "../../apiservices";
 
 const CartItems = () => {
-  const {
-    getTotalCartAmount,
-    all_product,
-    cartItems,
-    removeFromCart,
-    updateCartItemCount,
-  } = useContext(ShopContext);
+  const { getTotalCartAmount, cartItems, removeFromCart, updateCartItemCount } =
+    useContext(ShopContext);
+  const [allProducts, setAllProducts] = useState([]); // products state
 
+  // ✅ Fetch products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await getData("products");
+        setAllProducts(res || []);
+        // initialize cart after products are loaded
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
   const handleAddQuantity = (id) => {
     updateCartItemCount(id, cartItems[id] + 1);
   };
@@ -35,41 +45,41 @@ const CartItems = () => {
         <p>REMOVE</p>
       </div>
       <hr />
-      {all_product.length === 0 ? (
+      {allProducts?.length === 0 ? (
         <p>No products available</p>
       ) : (
-        all_product.map((e) => {
-          if (cartItems[e.id] > 0) {
+        allProducts?.map((e) => {
+          if (cartItems[e._id] > 0) {
             return (
-              <div key={e.id}>
+              <div key={e._id}>
                 <div className="cartitems-format cartitems-format-main">
                   <img
-                    src={e.image[0]}
+                    src={e?.images[0]}
                     alt=""
                     className="carticon-product-icon"
                   />
                   <p>{e.name}</p>
-                  <p>RS {e.new_price}</p>
+                  <p>RS {e.price}</p>
                   <div className="cartitems-quantity-wrapper">
                     <button
                       className="minus"
-                      onClick={() => handleSubtractQuantity(e.id)}
+                      onClick={() => handleSubtractQuantity(e._id)}
                     >
                       -
                     </button>
                     <span className="cartitems-quantity">
-                      {cartItems[e.id]}
+                      {cartItems[e._id]}
                     </span>
                     <button
                       className="plus"
-                      onClick={() => handleAddQuantity(e.id)}
+                      onClick={() => handleAddQuantity(e._id)}
                     >
                       +
                     </button>
                   </div>
-                  <p>Rs {e.new_price * cartItems[e.id]}</p>
+                  <p>Rs {e.price * cartItems[e._id]}</p>
                   <div
-                    onClick={() => removeFromCart(e.id)}
+                    onClick={() => removeFromCart(e._id)}
                     className="text-danger fw-bold carticon-remove-icon"
                   >
                     X

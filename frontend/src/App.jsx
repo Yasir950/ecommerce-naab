@@ -18,10 +18,9 @@ import women_banner from "./Components/Assets/banner_women.png";
 import kids_banner from "./Components/Assets/banner_kids.png";
 import { AuthContext } from "./Context/AuthContext";
 import CheckoutComp from "./Components/checkout/checkout";
+import OrdersTracking from "./Components/orders/myOrder";
 
 function App() {
-  const { user } = useContext(AuthContext);
-
   return (
     <div>
       <Router>
@@ -33,6 +32,10 @@ function App() {
             element={<ShopCategory banner={men_banner} category="men" />}
           />
           <Route
+            path="/product/:catId"
+            element={<ShopCategory banner={men_banner} />}
+          />
+          <Route
             path="/womens"
             element={<ShopCategory banner={women_banner} category="women" />}
           />
@@ -40,13 +43,11 @@ function App() {
             path="/kids"
             element={<ShopCategory banner={kids_banner} category="kid" />}
           />
-          <Route path="/product/:productId" element={<Product />} />
+          <Route path="/detail/:productId" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<CheckoutComp />} />
-          <Route
-            path="/login"
-            element={user ? <Navigate to="/" /> : <LoginSignup />}
-          />
+          <Route path="/orders" element={<OrdersTracking />} />
+          <Route path="/login" element={<LoginSignup />} />
         </Routes>
         <Footer />
       </Router>

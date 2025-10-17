@@ -1,4 +1,5 @@
 import Order from '../models/orderModels.js';
+import Product from '../models/productModels.js';
 import handleError from '../utils/errorhandler.js';
 const getOrders= async (req,res)=>{
     try {
@@ -31,6 +32,21 @@ const getOrdersByUserId = async (req, res) => {
     // Validate required fields
     if (!products || !user  || !price) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    for(let prod of products){
+     const product = await Product.findById(prod.productId);
+      if (!product) {
+        return res.status(404).json({ message: `Product ${prod.productId} not found` });
+      }
+
+      if (product.quantity < quantity) {
+        return res.status(400).json({ message: `Not enough stock for ${product.name}` });
+      }
+
+      // Decrease stock
+        product.quantity = Number(product.quantity) - Number(prod.quantity);
+      await product.save();
     }
 
     const newOrder = new Order({
